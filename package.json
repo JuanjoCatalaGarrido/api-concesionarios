@@ -1,0 +1,27 @@
+{
+  "name": "by.juanjo.concesionarios.api",
+  "version": "0.0.1",
+  "description": "API para el manejo de concesionarios",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuanjoCatalaGarrido/api-concesionarios.git"
+  },
+  "keywords": [
+    "api",
+    "concesionarios"
+  ],
+  "author": "Juanjo Catalá",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JuanjoCatalaGarrido/api-concesionarios/issues"
+  },
+  "homepage": "https://github.com/JuanjoCatalaGarrido/api-concesionarios#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
