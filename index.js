@@ -7,13 +7,13 @@ const expressAPP = express();
 
 const PORT = process.env.PORT || 8080;
 
-/* Binds the middleware function to the path "/" (by omition). When a requestuest is sent to
+/* Binds the middleware function to the path "/" (by omition). When a request is sent to
  * that path, then the middleware function gets executed.
  *
- * expresponses.json() parses requestuests as JSON.
+ * express.json() parses request as JSON.
  *
- * Middleware functions are functions that have access to the requestuest object (request), the responseponse object (response),
- * and the next middleware function in the application’s requestuest-responseponse cycle
+ * Middleware functions are functions that have access to the request object (req), the response object (res),
+ * and the next middleware function in the application’s request-response cycle
  */
 expressAPP.use("/", express.json());
 
