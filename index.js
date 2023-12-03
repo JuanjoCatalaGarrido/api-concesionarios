@@ -87,10 +87,25 @@ expressAPP.get("/concesionarios/:id", async (request, response) => {
   }
 });
 
-expressAPP.put("/concesionarios/:id", (request, response) => {
+expressAPP.put("/concesionarios/:id", async (request, response) => {
   const concesionarioId = request.params.id;
-  concesionarios[concesionarioId] = request.body;
-  response.json({ message: "okey" });
+  const concesionarioActualizado = request.body;
+  try {
+    const concesionarios = await concesionarioDocument.updateOne(
+      { _id: new ObjectId(concesionarioId) },
+      {
+        $set: {
+          nombre: concesionarioActualizado["nombre"],
+          direccion: concesionarioActualizado["direccion"],
+          coches: concesionarioActualizado["coches"],
+        },
+      }
+    );
+    response.json({ message: "okey" });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error });
+  }
 });
 
 expressAPP.delete("/concesionarios/:id", (request, response) => {
