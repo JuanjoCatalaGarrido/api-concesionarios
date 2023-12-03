@@ -1,5 +1,31 @@
-// Entrypoint for response API
+// --------------- Conexión con la base de datos MongoDB------------------
+const { MongoClient, ObjectId } = require("mongodb");
 
+// Replace the uri string with your connection string.
+const uri = "mongodb://127.0.0.1:27017";
+const client = new MongoClient(uri);
+let database = undefined;
+let concesionarioDocument = undefined;
+
+async function connectBD() {
+  try {
+    await client.connect();
+    database = client.db("concesionariosDB");
+    concesionarioDocument = database.collection("concesionarios");
+  } catch (e) {
+    console.error(e);
+    console.log("ERROR de conexión a la BBDD");
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  } finally {
+  }
+}
+
+connectBD().catch(console.error);
+
+// -------------------------------------------------------------------------
+
+// Entrypoint for response API
 const express = require("express");
 
 // Creates an Express application
@@ -27,33 +53,38 @@ expressAPP.get("/info", (request, response) => {
   responseponse.json({ version: "0.0.1" });
 });
 
-// Definimos una estructura de datos
-// (temporal hasta incorporar una base de datos)
-let listaCoches = [
-  { modelo: "Clio", cv: 1000, precio: 20000 },
-  { modelo: "Skyline R34", cv: 200, precio: 10000 },
-];
-let concesionarioDePrueba = {
-  nombre: "concesionario1",
-  direccion: "avda inventada",
-  coches: listaCoches,
-};
-let concesionarios = [concesionarioDePrueba];
-
-expressAPP.get("/concesionarios", (request, response) => {
-  response.json(concesionarios);
+expressAPP.get("/concesionarios", async (request, response) => {
+  try {
+    const curorConcesionarios = await concesionarioDocument.find({});
+    const concesionarios = await curorConcesionarios.toArray();
+    response.json(concesionarios);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error });
+  }
 });
 
-expressAPP.post("/concesionarios", (request, response) => {
-  const nuevoConcesionario = request.body;
-  concesionarios.push(nuevoConcesionario);
-  response.json({ message: "okey" });
+expressAPP.post("/concesionarios", async (request, response) => {
+  try {
+    const concesionarios = await concesionarioDocument.insertOne(request.body);
+    response.json({ message: "okey" });
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error });
+  }
 });
 
-expressAPP.get("/concesionarios/:id", (request, response) => {
+expressAPP.get("/concesionarios/:id", async (request, response) => {
   const concesionarioId = request.params.id;
-  const concesionario = concesionarios[concesionarioId];
-  response.json(concesionario);
+  try {
+    const concesionarios = await concesionarioDocument.findOne({
+      _id: new ObjectId(concesionarioId),
+    });
+    response.json(concesionarios);
+  } catch (error) {
+    console.error(error);
+    response.status(500).json({ error: error });
+  }
 });
 
 expressAPP.put("/concesionarios/:id", (request, response) => {
