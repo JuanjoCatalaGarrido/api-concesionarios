@@ -5,13 +5,13 @@ const { MongoClient, ObjectId } = require("mongodb");
 const uri = "mongodb://127.0.0.1:27017";
 const client = new MongoClient(uri);
 let database = undefined;
-let concesionarioDocument = undefined;
+let concesionarioCollection = undefined;
 
 async function connectBD() {
   try {
     await client.connect();
     database = client.db("concesionariosDB");
-    concesionarioDocument = database.collection("concesionarios");
+    concesionarioCollection = database.collection("concesionarios");
   } catch (e) {
     console.error(e);
     console.log("ERROR de conexión a la BBDD");
@@ -55,7 +55,7 @@ expressAPP.get("/info", (request, response) => {
 
 expressAPP.get("/concesionarios", async (request, response) => {
   try {
-    const curorConcesionarios = await concesionarioDocument.find({});
+    const curorConcesionarios = await concesionarioCollection.find({});
     const concesionarios = await curorConcesionarios.toArray();
     response.json(concesionarios);
   } catch (error) {
@@ -66,7 +66,7 @@ expressAPP.get("/concesionarios", async (request, response) => {
 
 expressAPP.post("/concesionarios", async (request, response) => {
   try {
-    const concesionarios = await concesionarioDocument.insertOne(request.body);
+    const concesionarios = await concesionarioCollection.insertOne(request.body);
     response.json({ message: "okey" });
   } catch (error) {
     console.error(error);
@@ -77,7 +77,7 @@ expressAPP.post("/concesionarios", async (request, response) => {
 expressAPP.get("/concesionarios/:ObjId", async (request, response) => {
   const concesionarioId = request.params.ObjId;
   try {
-    const concesionarios = await concesionarioDocument.findOne({
+    const concesionarios = await concesionarioCollection.findOne({
       _id: new ObjectId(concesionarioId),
     });
     response.json(concesionarios);
@@ -91,7 +91,7 @@ expressAPP.put("/concesionarios/:ObjId", async (request, response) => {
   const concesionarioId = request.params.ObjId;
   const concesionarioActualizado = request.body;
   try {
-    const concesionarios = await concesionarioDocument.updateOne(
+    const concesionarios = await concesionarioCollection.updateOne(
       { _id: new ObjectId(concesionarioId) },
       {
         $set: {
@@ -116,7 +116,7 @@ expressAPP.put("/concesionarios/:ObjId", async (request, response) => {
 expressAPP.delete("/concesionarios/:ObjId", async (request, response) => {
   const concesionarioId = request.params.ObjId;
   try {
-    const concesionario = await concesionarioDocument.deleteOne({
+    const concesionario = await concesionarioCollection.deleteOne({
       _id: new ObjectId(concesionarioId),
     });
     response.json({ message: "okey" });
@@ -129,7 +129,7 @@ expressAPP.delete("/concesionarios/:ObjId", async (request, response) => {
 expressAPP.get("/concesionarios/:ObjId/coches", async (request, response) => {
   const concesionarioId = request.params.ObjId;
   try {
-    const concesionarios = await concesionarioDocument.findOne({
+    const concesionarios = await concesionarioCollection.findOne({
       _id: new ObjectId(concesionarioId),
     });
     response.json(concesionarios["coches"]);
@@ -143,7 +143,7 @@ expressAPP.post("/concesionarios/:ObjId/coches", async (request, response) => {
   const concesionarioId = request.params.ObjId;
   const nuevoCoche = request.body;
   try {
-    const resultado = await concesionarioDocument.updateOne(
+    const resultado = await concesionarioCollection.updateOne(
       { _id: new ObjectId(concesionarioId) },
       {
         $push: {
@@ -162,12 +162,23 @@ expressAPP.post("/concesionarios/:ObjId/coches", async (request, response) => {
   }
 });
 
+/*
+  ----------------------- WARNING --------------------------------
+  All of the following endpoints use a parameter named "cocheId".
+  It's not the hash of an object, it's actually the position
+  of the car in the array.
+
+  The reason for this, is just maintaining the behaviour 
+  of the old API, even though usings IDs  would make it eaiser.
+------------------------------------------------------------------
+*/
+
 expressAPP.get("/concesionarios/:ObjId/coches/:cocheId", async (request, response) => {
   const concesionarioId = request.params.ObjId;
   const cocheId = request.params.cocheId;
 
   try {
-    const concesionarios = await concesionarioDocument.findOne({
+    const concesionarios = await concesionarioCollection.findOne({
       _id: new ObjectId(concesionarioId),
     });
 
@@ -193,7 +204,7 @@ expressAPP.put("/concesionarios/:ObjId/coches/:cocheId", async (request, respons
   const cocheNuevo = request.body;
 
   try {
-    const resultado = await concesionarioDocument.updateOne(
+    const resultado = await concesionarioCollection.updateOne(
       { _id: new ObjectId(concesionarioId) },
       {
         $set: {
@@ -218,7 +229,7 @@ expressAPP.delete("/concesionarios/:id/coches/:cocheId", async (request, respons
   const cocheId = parseInt(request.params.cocheId);
 
   try {
-    const concesionarios = await concesionarioDocument.findOne({
+    const concesionarios = await concesionarioCollection.findOne({
       _id: new ObjectId(concesionarioId),
     });
 
@@ -231,7 +242,7 @@ expressAPP.delete("/concesionarios/:id/coches/:cocheId", async (request, respons
     if (!cocheEncontrado) {
       throw "ID not found";
     }
-    const resultado = await concesionarioDocument.updateOne(
+    const resultado = await concesionarioCollection.updateOne(
       { _id: new ObjectId(concesionarioId) },
       {
         $pull: {
