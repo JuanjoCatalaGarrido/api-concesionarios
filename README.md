@@ -17,18 +17,21 @@ PORT Está definida, esta tendrá preferencia.
 
 ## ENDPOINTS
 
+- ObjId = el id del objeto concesionario de la colección.
+- cocheId = la posición del coche en el array.
+
 ### Concesionarios:
 
 - GET /concesionarios: Obtiene todos los concesionarios.
 - POST /concesionarios: Crea un nuevo concesionario.
-- GET /concesionarios/:id: Obtiene un concesionario.
-- PUT /concesionarios/:id: Actualiza un concesionario.
-- DELETE /concesionarios/:id: Borra un concesionario.
+- GET /concesionarios/:objId Obtiene un concesionario.
+- PUT /concesionarios/:objId Actualiza un concesionario.
+- DELETE /concesionarios/:objId Borra un concesionario.
 
 ### Coches
 
-- GET /concesionarios/:id/coches: Obtiene todos los coches de un concesionario.
-- POST /concesionarios/:id/coches: Añade un nuevo coche a un concesionario.
-- GET /concesionarios/:id/coches/:cocheId: Obtiene un coche de un concesionario.
-- PUT /concesionarios/:id/coches/:cocheId: Actualiza un coche por de un concesionario por ID.
-- DELETE /concesionarios/:id/coches/:cocheId: Borra un coche de un concesionario.
+- GET /concesionarios/:objId/coches: Obtiene todos los coches de un concesionario.
+- POST /concesionarios/:objId/coches: Añade un nuevo coche a un concesionario.
+- GET /concesionarios/:objId/coches/:cocheId : Obtiene un coche de un concesionario.
+- PUT /concesionarios/:objId/coches/:cocheId : Actualiza un coche por de un concesionario por ID.
+- DELETE /concesionarios/:objId/coches/:cocheId : Borra un coche de un concesionario.
