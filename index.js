@@ -99,7 +99,7 @@ expressAPP.put("/concesionarios/:ObjId", async (request, response) => {
   const concesionarioId = request.params.ObjId;
   const concesionarioActualizado = request.body;
   try {
-    const concesionarios = await concesionarioCollection.updateOne(
+    const resultado = await concesionarioCollection.updateOne(
       { _id: new ObjectId(concesionarioId) },
       {
         $set: {
