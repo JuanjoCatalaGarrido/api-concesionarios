@@ -90,13 +90,13 @@
         }
       }
     },
-    "/concesionarios/{id}": {
+    "/concesionarios/{objID}": {
       "get": {
         "summary": "Get one car dealer by id",
         "parameters": [
           {
             "in": "path",
-            "name": "id",
+            "name": "objID",
             "type": "string",
             "required": true
           }
@@ -117,7 +117,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "id",
+            "name": "objID",
             "required": true,
             "type": "string"
           },
@@ -142,7 +142,7 @@
         "parameters": [
           {
             "in": "path",
-            "name": "id",
+            "name": "objID",
             "required": true,
             "type": "string"
           }
@@ -154,13 +154,146 @@
         }
       }
     },
-    "/concesionarios/{id}/coches": {
-      "get": {},
-      "post": {}
+    "/concesionarios/{objID}/coches": {
+      "get": {
+        "summary": "Get all cars from a car dealer.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "objID",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array with all cars",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Coche"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a car dealer.",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "objID",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "coche",
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/definitions/Coche"
+              },
+              "example": {
+                "modelo": "Nissan patrol",
+                "cv": 1300,
+                "precio": 20000
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{ message : 'ok'}"
+          }
+        }
+      }
     },
-    "/concesionarios/{id}/coches/{id}": {
-      "get": {},
-      "post": {}
+    "/concesionarios/{objID}/coches/{pos}": {
+      "get": {
+        "summary": "Get specific car using car position in array.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "objID",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "pos",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array with all cars",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Coche"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update one car",
+        "operationId": "updateCar",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "objID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "pos",
+            "type": "integer",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "coche",
+            "schema": {
+              "$ref": "#/definitions/Coche"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{ message: 'ok' }"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete one car",
+        "operationId": "deleteCar",
+        "consumes": ["application/json"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "objID",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "pos",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "{ message: 'ok' }"
+          }
+        }
+      }
     }
   }
 }
