@@ -13,11 +13,11 @@ async function connectBD() {
     database = client.db("concesionariosDB");
     concesionarioCollection = database.collection("concesionarios");
   } catch (e) {
+    console.error("ERROR DE CONEXIÓN A LA BBDD");
     console.error(e);
-    console.log("ERROR de conexión a la BBDD");
     // Ensures that the client will close when you finish/error
     await client.close();
-  } finally {
+    process.exit(-1);
   }
 }
 
@@ -42,6 +42,14 @@ const PORT = process.env.PORT || 8080;
  * and the next middleware function in the application’s request-response cycle
  */
 expressAPP.use("/", express.json());
+
+// ----------------    SWAGGER UI BINDING ---------------
+const swaggerUI = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
+
+expressAPP.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
+// --------------------------------------------------------------------------
 
 //Starts a UNIX socket and listens for connections on the given path
 expressAPP.listen(PORT, () => {
